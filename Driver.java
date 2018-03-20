@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -48,9 +49,8 @@ public class Driver {
 				System.out.printf("\t %3d : %s %-10s", (i + 1), type, userDatabase.getAllProfiles().get(i).getUsername());
 			else if ((i + 1) % 3 == 0)
 				System.out.printf("\t %3d : %s %-10s\n", (i + 1), type, userDatabase.getAllProfiles().get(i).getUsername());
-			// System.out.printf("\t\t %-3d \t%-10s \n", (i + 1),
-			// userDatabase.getAllProfiles().get(i).getUsername());
 		}
+		
 		System.out.print("\n\n\t *** User no. : ( User type ) Username");
 		System.out.print("\n\t *** ( A ) Adult Profile");
 		System.out.print("\n\t *** ( C ) Child Profile");
@@ -61,9 +61,11 @@ public class Driver {
 		System.out.print("\n\t ========= Search Profile " + "====== ");
 		System.out.print("\n\t === Enter username : ");
 		String searchName = sc.nextLine();
-		if (userDatabase.existingUser(searchName.trim())) { ////// think about trim
+		searchName = searchName.trim();
+		
+		if (userDatabase.existingUser(searchName)) { ////// think about trim
 			System.out.print("\n\t *** User Profile '" + searchName + "' found");
-			userDatabase.getProfile(searchName.trim()).printProfile();
+			userDatabase.getProfile(searchName).printProfile();
 			
 			System.out.println();
 			if ( Menu.YesOrNoOption("Edit Profile?") == 1 ) {
@@ -75,23 +77,17 @@ public class Driver {
 	}
 	
 	public String[] getEditProfileOptions(User userProfile) {
-		String[] options =  new String[6];
+		String[] options =  { "Show Profile", "Edit Status", "Edit Image", "Edit Age", "Add a network", 
+				"Delete a network", "Find a friend", "Back to main menu"};
 		
 		if ( userProfile.getStatus().isEmpty() )
-			options[0] = "Add Status";
-		else options[0] = "Edit Status";
+			options[1] = "Add Status";
 		
 		if ( userProfile.getImage().isEmpty() )
-			options[1] = "Add Image";
-		else options[1] = "Edit Image";
+			options[2] = "Add Image";
 		
 		if ( userProfile.getAge() == 0 )
-			options[2] = "Add Age";
-		else options[2] = "Edit Age";
-		
-		options[3] = "Add a network";
-		options[4] = "Delete a network";
-		options[5] = "Back to main menu";
+			options[3] = "Add Age";
 		
 		return options;
 	}
@@ -106,38 +102,35 @@ public class Driver {
 			
 			switch (choice) {
 				case 0: {
-					System.out.print("\t === Enter Status : ");
-					userProfile.setStatus(sc.nextLine());
+					System.out.println();
+					userProfile.printProfile();  
 					break;
 				}
 				case 1: {
-					System.out.print("\t === Enter Image : ");
-					userProfile.setImage(sc.nextLine());
-					break;
+					System.out.print("\t === Enter Status : ");
+					userProfile.setStatus(sc.nextLine());
+					break; 
 				}
 				case 2: {
-					userProfile.setAge(Menu.getIntInput("Enter Age"));
-					break;
+					System.out.print("\t === Enter Image : ");
+					userProfile.setImage(sc.nextLine());
+					break; 
 				}
-				case 3: {
-					System.out.print("\t === Enter friend username to add : ");
-					String friendName = sc.nextLine();
-					if ( userDatabase.existingUser(friendName) ) {
-						userProfile.addFriend(userDatabase.getProfile(friendName));
-					} else System.out.print("\n\t *** User Profile with username '" + friendName + "' does not exist");
+				case 3: 
+					userProfile.setAge(Menu.getIntInput("Enter Age")); 
 					break;
-				}
-				case 4: {
-					System.out.print("\t === Enter friend username to delete: ");
-					String friendName = sc.nextLine();
-					if ( userDatabase.existingUser(friendName) ) {
-						userProfile.deleteFriend(userDatabase.getProfile(friendName));
-					} else System.out.print("\n\t *** User Profile with username '" + friendName + "' does not exist");
+				case 4: 
+					ConnectUsers(userProfile.getUsername()); 
 					break;
-				}
-				case 5: break;
+				case 5: 
+					DisconnectUsers(userProfile.getUsername()); 
+					break;
+				case 6: 
+					System.out.print("Find friends"); 
+					break;
+				case 7: break;
 			}
-		} while (choice != 5); // because there are only 5 choices
+		} while (choice != 7); // because there are only 5 choices
 	}
 	
 	public void addProfile() {
@@ -149,7 +142,7 @@ public class Driver {
 		
 		switch(choice) {
 			case 0 : addAdultProfile(); break;
-			case 1 : addChildProfile(); break;
+			case 1 : addChildProfile(); break; 
 			case 2 : break;
 		}
 	}
@@ -158,6 +151,7 @@ public class Driver {
 		System.out.print("\n\t ========= Create Adult Profile " + "====== ");
 		System.out.print("\n\t === Enter username : ");
 		String newUsername = sc.nextLine();
+		newUsername = newUsername.trim();
 
 		if (!userDatabase.existingUser(newUsername)) {
 			userDatabase.addUser(new Adult(newUsername));
@@ -170,16 +164,22 @@ public class Driver {
 	public void addChildProfile() {
 		System.out.print("\n\t ========= Create Child Profile " + "====== ");
 		System.out.print("\n\t === Enter username : ");
+		String[] parentName = new String[2];
 		String newUsername = sc.nextLine();
+		newUsername = newUsername.trim();
 
 		if (!userDatabase.existingUser(newUsername)) {
-			System.out.print("\n\t === Enter parent username 1 : ");
-			String parentOne = sc.nextLine();
-			System.out.print("\n\t === Enter parent username 1 : ");
-			String parentTwo = sc.nextLine();
+			for (int i=0; i<2; i++) {
+				do {
+					System.out.print("\n\t === Enter parent username " + (i+1)  + " : ");
+					parentName[i] = sc.nextLine();
+				} while ( userDatabase.existingUser(parentName[i]) );
+			}
+			
 			int age = Menu.getIntInput("\nEnter age");
 			
-			userDatabase.addUser(new Child(newUsername, age, ((Adult) userDatabase.getProfile(parentOne)), ((Adult) userDatabase.getProfile(parentTwo))));
+			userDatabase.addUser(new Child(newUsername, age, 
+					((Adult) userDatabase.getProfile(parentName[0])), ((Adult) userDatabase.getProfile(parentName[1]))));
 			System.out.print("\n\t *** User Profile with username '" + newUsername + "' successfully created.");
 			editProfile(userDatabase.getProfile(newUsername));
 		} else
@@ -190,22 +190,46 @@ public class Driver {
 		System.out.print("\n\t ========= Delete Profile " + "====== ");
 		System.out.print("\n\t === Enter username : ");
 		String newUsername = sc.nextLine();
-		if (userDatabase.existingUser(newUsername)) {
-			userDatabase.deleteUser(newUsername);
-			System.out.print("\n\t *** User Profile '" + newUsername + "' successfully deleted.");
+		if (userDatabase.existingUser(newUsername.trim())) {
+			userDatabase.deleteUser(newUsername.trim());
+			System.out.print("\n\t *** User Profile '" + newUsername.trim() + "' successfully deleted.");
 		} else
-			System.out.print("\n\t *** User Profile with username '" + newUsername + "' does not exist.");
+			System.out.print("\n\t *** User Profile with username '" + newUsername.trim() + "' does not exist.");
 	}
 
-	////////
-	public void ConnectUsers(User userOne, User userTwo) {
+	public void ConnectUsers(String username) {
+		System.out.print("\t === Enter friend username to add : ");
+		String friendName = sc.nextLine();
+		friendName = friendName.trim();
 		
+		if ( userDatabase.existingUser(friendName.trim()) ) {
+			userDatabase.getProfile(username).addFriend(userDatabase.getProfile(friendName));
+			relationships.add(new Relationship(username, friendName));
+			relationships.add(new Relationship(username, friendName));
+		} else System.out.print("\n\t *** User Profile with username '" + friendName + "' does not exist");
+	}
+	
+	public void DisconnectUsers(String username) {
+		System.out.print("\t === Enter friend username to delete: ");
+		String friendName = sc.nextLine();
+		friendName = friendName.trim();
+		
+		if ( userDatabase.existingUser(friendName) ) {
+			userDatabase.getProfile(username).deleteFriend(userDatabase.getProfile(friendName));
+			for (int i=0; i<relationships.size(); i++) {
+				if (relationships.get(i).getUsernameOne() == username && relationships.get(i).getUsernameTwo() == friendName)
+					relationships.remove(i);
+				if (relationships.get(i).getUsernameOne() == friendName && relationships.get(i).getUsernameTwo() == username)
+					relationships.remove(i);
+				}
+		} else System.out.print("\n\t *** User Profile with username '" + friendName + "' does not exist");
 	}
 
 	public static void main(String[] args) {
 
 		Driver network = new Driver();
-		String mainMenu[] = { "Show all users", "Search user", "Add User", "Delete User", "Connect Users", "Exit" };
+		String mainMenu[] = { "Show all users", "Search user", "Add new user", 
+				"Delete a user", "Connect users", "Exit" };
 		Menu menu = new Menu("Main Menu", mainMenu);
 		int choice;
 		
@@ -213,18 +237,11 @@ public class Driver {
 			menu.displayMenu();
 			choice = menu.getValidOption();
 			switch (choice) {
-				case 0: 
-					network.displayAllUsers(); break;
-				case 1: 
-					network.searchProfile(); break;
-				case 2: 
-					network.addProfile(); break;
-				case 3: 
-					network.DeleteProfile(); break;
-				case 4: 
-					System.out.println("Connect users here"); break;
-				case 5: 
-					System.out.println("\n\t *** See you. You exited the application\n"); break;
+				case 0: network.displayAllUsers(); break;
+				case 1: network.searchProfile(); break;
+				case 2: network.addProfile(); break;
+				case 3: network.DeleteProfile(); break;
+				case 4: System.out.println("\n\t *** See you. You exited the application\n"); break;
 			}
 		} while (choice != (mainMenu.length-1));
 	}
