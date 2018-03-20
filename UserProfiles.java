@@ -26,8 +26,7 @@ public class UserProfiles {
 	public void addUser(User newUser) {
 		if ( !existingUser(newUser.getUsername()) ) {
 			userProfiles.add(newUser);
-			System.out.println("New User Profile : " + newUser.getUsername() + " successfully added");
-		} // else System.out.println("Username : " + newUser.getUsername() + " already exists");
+		}
 	}
 	
 	public void deleteUserfromFriends(User user) {
@@ -43,7 +42,7 @@ public class UserProfiles {
 					userProfiles.remove(i);
 				}
 			}
-		} else System.out.println("No such user profile currently in system");
+		}
 	}
 	
 	public User getProfile(String username) {
@@ -53,7 +52,6 @@ public class UserProfiles {
 					return userProfiles.get(i);
 			}
 		}
-		System.out.println(username + " does not exist");
 		return null;
 	}
 	

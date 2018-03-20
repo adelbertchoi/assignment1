@@ -9,26 +9,13 @@ public abstract class User {
 	private ArrayList<User> friends;
 	
 	// constructors 
-	public User(String username, String status, int age) {
-		this.username = username;
-		this.status = status;
-		this.age = age;
-		this.friends = new ArrayList<User>();
-	}
-	
-	// alternative constructor if only the of a new user profile is given
 	public User(String username, int age) {
 		this.username = username;
 		this.age = age;
 		this.friends = new ArrayList<User>();
 	}
 	
-	public User(String username, String status) {
-		this.username = username;
-		this.status = status;
-		this.friends = new ArrayList<User>();
-	}
-	
+	// alternative constructor if only the of a new user profile is given
 	public User(String username) {
 		this.username = username;
 		this.friends = new ArrayList<User>();
@@ -59,6 +46,7 @@ public abstract class User {
 			if ( this.friends.get(i).getUsername() == friend.getUsername() ) {
 				this.friends.remove(i);
 				friend.deleteFriend(this);
+				System.out.print("\n\t ***" + getUsername() + " and " + friend.getUsername() + " are not friends anymore");
 				return true;
 			}
 		} 

@@ -1,3 +1,4 @@
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -15,21 +16,18 @@ public class Menu {
 	public String[] getOptions() { return this.options; }
 
 	public void displayMenu() {
-		// System.out.println("\n\t ========= Menu ========================== ");
 		System.out.println("\n\t ========= " + this.menuTitle + " ====== ");
 		for (int i = 0; i < options.length; i++)
 			System.out.println("\t\t " + (i) + "\t" + options[i]);
-		// System.out.println("\t\t 0 \tExit");
-		// System.out.println("\t\t ======================================== ");
 	}
 
 	public int getValidOption() {
 		int choice = -1; 
+		
 		do {
 			try {
 				System.out.print("\t === Enter choice : ");
 				choice = sc.nextInt();
-				//choice = Integer.parseInt(sc.nextLine());
 			} catch (InputMismatchException ex) {
 				System.out.print("\t *** Invalid input. Enter again.\n");
 				sc.nextLine();
@@ -40,6 +38,7 @@ public class Menu {
 	
 	public static int YesOrNoOption(String message) {
 		int choice = -1;
+		
 		do {
 			try {
 				System.out.print("\n\t === " + message + " (1-Yes / 0-No) Enter choice : ");

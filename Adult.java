@@ -6,10 +6,7 @@ public class Adult extends User {
 	private boolean hasChild;
 	// private boolean hasPartner;
 	
-	// adult users are not required to place their age
 	// constructors
-	public Adult(String username, String status, int age) { super(username, status, age); }
-	public Adult(String username, int age) { super(username, age); }	
 	public Adult(String username) { super(username); }
 	
 	public Child getDependent() { return this.dependent; }
@@ -33,7 +30,7 @@ public class Adult extends User {
 	public boolean addFriend(User friend) {
 		
 		if ( !(friend instanceof Adult) ) {
-			System.out.print("\n\t *** Adults cannot network with Children");
+			System.out.print("\n\t *** Adults type users cannot network with Children type users");
 			return false;
 		}
 		
@@ -46,11 +43,12 @@ public class Adult extends User {
 		
 		super.addToFriends(friend);
 		friend.addToFriends(this);
+		System.out.print("\n\t ***" + getUsername() + " and " + friend.getUsername() + " are now friends");
 		return true;
 	}
 	
 	public void printProfile() {
-		System.out.println("\n\t ========= Profile ====== ");
+		System.out.println("\n\t ========= Adult User Profile ====== ");
 		System.out.printf("\t\t %-10s :   %-15s", "Username", super.getUsername());
 		
 		if ( super.getAge() != 0 )
@@ -70,7 +68,6 @@ public class Adult extends User {
 			for(int i=0; i<super.getFriends().size(); i++)
 				System.out.printf("\n\t\t   %-3d %-10s", (i+1), super.getFriends().get(i).getUsername());
 		}			
-		// System.out.println("\n\t ======================================= ");
 	}
 	
 }
