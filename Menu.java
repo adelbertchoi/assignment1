@@ -28,6 +28,10 @@ public class Menu {
 			try {
 				System.out.print("\t === Enter choice : ");
 				choice = sc.nextInt();
+				
+				if (choice < 0 || choice > (options.length-1))
+					System.out.print("\t *** Invalid input. Enter again.\n");
+				
 			} catch (InputMismatchException ex) {
 				System.out.print("\t *** Invalid input. Enter again.\n");
 				sc.nextLine();
@@ -43,6 +47,10 @@ public class Menu {
 			try {
 				System.out.print("\n\t === " + message + " (1-Yes / 0-No) Enter choice : ");
 				choice = sc.nextInt();
+				
+				if (!(choice == 0 || choice == 1))
+					System.out.print("\t *** Invalid input. Enter again.\n");
+				
 			} catch (InputMismatchException ex) {
 				System.out.print("\t *** Invalid input. Enter again.\n");
 				sc.nextLine();

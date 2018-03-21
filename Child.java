@@ -1,18 +1,31 @@
 
 public class Child extends User {
 
-	private Adult[] parent = new Adult[2];
+	private Adult parentOne;
+	private Adult parentTwo;
 	
-	// constructors
+	// constructor
 	public Child(String username, int age, Adult parentOne, Adult parentTwo) {
 		super(username, age);
-		this.parent[0] = parentOne;
-		this.parent[1] = parentTwo;
-		parentOne.setDepedent(this, parentTwo);
-		parentTwo.setDepedent(this, parentOne);
+		this.parentOne = parentOne;
+		this.parentTwo = parentTwo;
+		parentOne.setDepedent(this);
+		parentTwo.setDepedent(this);
+		parentOne.setPartner(parentTwo);
+		parentTwo.setPartner(parentOne);
 	}
 	
-	public Adult[] getParents() { return this.parent; }
+	public Adult getParentOne() { return this.parentOne; }
+	public Adult getParentTwo() { return this.parentTwo; }
+	
+	public void editAge(int newAge) {
+		if (newAge < 2 || newAge > 17) {
+			System.out.print("\n\t *** Age of child user must be between 3 and 16");
+			return;
+		}
+		
+		super.setAge(newAge);
+	}
 	
 	// method to add a network for an adult profile
 	public boolean addFriend(User friend) {
@@ -27,16 +40,14 @@ public class Child extends User {
 			return false;
 		}
 		
-		for (int i=0; i<super.getFriends().size(); i++) {
-			if ( super.getFriends().get(i).getUsername() == friend.getUsername() ) {
-				System.out.print("\n\t *** " + super.getUsername() + " and " + friend.getUsername() + " are already friends");
-				return false;
-			}
+		if ( super.getFriends().contains(friend) ) {
+			System.out.print("\n\t *** " + super.getUsername() + " and " + friend.getUsername() + " are already friends");
+			return false;
 		}
 	
 		super.addToFriends(friend);
 		friend.addToFriends(this);
-		System.out.print("\n\t ***" + getUsername() + " and " + friend.getUsername() + " are now friends");
+		System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are now friends");
 		return true;
 	}
 	
@@ -45,12 +56,15 @@ public class Child extends User {
 		System.out.printf("\t\t %-10s :   %-15s", "Username", super.getUsername());
 		System.out.printf("\n\t\t %-10s :   %-15s", "Age", super.getAge());
 		
+		if ( !(super.getImage().isEmpty()) )
+			System.out.printf("\n\t\t %-10s :   %-15s", "Image", super.getImage());
+		
 		if ( !(super.getStatus().isEmpty()) )
 			System.out.printf("\n\t\t %-10s :   %-15s", "Status", super.getStatus());
 		
-		if ( parent[0] != null ) {
-			System.out.printf("\n\t\t %-10s :   %-15s", "Parents", parent[0].getUsername());
-			System.out.printf("\n\t\t %-10s     %-15s", "", parent[1].getUsername());
+		if ( parentOne != null ) {
+			System.out.printf("\n\t\t %-10s :   %-15s", "Parents", parentOne.getUsername());
+			System.out.printf("\n\t\t %-10s     %-15s", "", parentTwo.getUsername());
 		}
 			
 		if( !super.getFriends().isEmpty() ) {
