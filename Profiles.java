@@ -1,12 +1,10 @@
 
 /*
  * ====== Profiles.java
- * 
- * This class is stores users instantiated. Both adult and  
- * child users are added and managed in this class.  
- * This social network assumes that the username entered 
- * for each user can uniquely identify a certain instantiated
- * user. 
+ * This class is stores users instantiated. Both adult and child users 
+ * are added and managed in this class. This social network assumes that 
+ * the username entered for each user can uniquely identify a certain 
+ * instantiated user. 
  * 
  * */
 
@@ -63,20 +61,28 @@ public class Profiles {
 	}
 	
 	
-	// method to deleting an adult type user permanently from the list of profiles 
-	// certain conditions need to be met before an adult user can be deleted 
-	public void deleteAdultUser(String username) {
+	public void deleteUser(String username) { 
 		// if no user with username exist cannot delete anything
 		if ( !existingUser(username) )
 			return;
 			
+		if ( getProfile(username) instanceof Adult )
+			deleteAdultUser(username);
+		else
+			deleteChildUser(username);	
+	}
+	
+	
+	// method to deleting an adult type user permanently from the list of profiles 
+	// certain conditions need to be met before an adult user can be deleted 
+	public void deleteAdultUser(String username) {
 		Adult user = ((Adult) getProfile(username));
 
 		// if adult user has a partner and dependent account cannot delete the user
 		// cause relationships will be broken
 		// adult user must not have a dependent to delete their profile
 		// other the dependent user profile must be deleted to delete adult profile
-		if ((user.getPartner() != null) && (user.getDependent() != null)) {
+		if ((user.getPartner() != null) && (!user.getDependents().isEmpty())) {
 			System.out.print("\n\t *** Cannot delete '" + username + "' since user has a dependent");
 			return;
 		}
@@ -99,16 +105,12 @@ public class Profiles {
 	// method to deleting a child type user permanently from the list of profiles 
 	// certain conditions need to be met before an adult user can be deleted 	
 	public void deleteChildUser(String username) {
-		// if no user with username exist cannot delete anything
-		if (!existingUser(username))
-			return;
-
 		Child user = ((Child) getProfile(username));
 
 		// set the dependents of parents to null
 		// since this child user profile will no longer exist
-		user.getParentOne().setDepedent(null); 
-		user.getParentTwo().setDepedent(null);
+		user.getParentOne().removeDepedent(user); 
+		user.getParentTwo().removeDepedent(user);
 
 		// delete the child user profile from the list of user profiles
 		for (int i = 0; i < userProfiles.size(); i++) {

@@ -1,13 +1,10 @@
 
 /*
  * ====== Child.java
- * 
- * This class is a subclass of the User abstract class it 
- * implements the abstract method addFriends, printProfile, 
- * and editAge. This subclass has new additional instance 
- * variables parentOne and parentTwo. These variables
- * will keep track of the parent users for child objects
- * instantiated. 
+ * This class is a subclass of the User abstract class it implements the 
+ * abstract method addFriends, printProfile, and editAge. This subclass 
+ * has new additional instance variables parentOne and parentTwo. These 
+ * variables will keep track of the parent users for child objects instantiated. 
  * 
  * */
 
@@ -23,8 +20,8 @@ public class Child extends User {
 		super(username, age);
 		this.parentOne = parentOne;
 		this.parentTwo = parentTwo;
-		parentOne.setDepedent(this); 
-		parentTwo.setDepedent(this);
+		parentOne.addDepedent(this); 
+		parentTwo.addDepedent(this);
 		parentOne.setPartner(parentTwo);
 		parentTwo.setPartner(parentOne);
 	}
@@ -70,6 +67,10 @@ public class Child extends User {
 	public void printProfile() {
 		System.out.println("\n\t ========= Child User Profile ====== ");
 		System.out.printf("\t\t %-10s :   %-15s", "Username", super.getUsername());
+		
+		if ( !super.getFirstName().isEmpty() )
+			System.out.printf("\n\t\t %-10s :   %s %s", "Full Name", super.getFirstName(), super.getLastName());
+		
 		System.out.printf("\n\t\t %-10s :   %-15s", "Age", super.getAge());
 		
 		// whether certain details of the adult user depends

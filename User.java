@@ -1,14 +1,12 @@
 
 /*
  * ====== User.java
- * 
- * This class is a stores all the relevant information for 
- * for a certain user. These include username, age, status,  
- * image, and most importantly a list of friends. Since, there
- * can be two types of users. This class is abstract hence
- * cannot be instantiated. However, this class is useful for
- * a number of instance variables and methods in this class
- * can be inherited in subclasses. 
+ * This class is a stores all the relevant information for for a certain 
+ * user. These include username, age, status, image, and most importantly 
+ * a list of friends. Since, there can be two types of users. This class 
+ * is abstract hence cannot be instantiated. However, this class is useful 
+ * for a number of instance variables and methods in this class can be 
+ * inherited in subclasses. 
  * 
  * */
 
@@ -17,6 +15,8 @@ import java.util.ArrayList;
 public abstract class User {
 	
 	private String username;
+	private String firstname = new String();
+	private String lastname = new String();
 	private String status = new String();
 	private String image = new String();
 	private int age = 0;
@@ -39,6 +39,8 @@ public abstract class User {
 	// getters - to obtain user class instance variables 
 	// to obtain user profile information
 	public String getUsername() { return this.username; }
+	public String getFirstName() { return this.firstname; }
+	public String getLastName() { return this.lastname; }
 	public String getStatus() { return this.status; }
 	public String getImage() { return this.image; }
 	public int getAge() { return this.age; }
@@ -46,6 +48,8 @@ public abstract class User {
 	
 	// setters - to allow changes to user class instance variables
 	public void setUsername(String newUsername) { this.username = newUsername; }
+	public void setFirstname(String newFirstname) { this.firstname = newFirstname; }
+	public void setLastname(String newLastname) { this.lastname = newLastname; }
 	public void setImage(String newImage) { this.image = newImage; }
 	public void setAge(int newAge) { this.age = newAge; };
 	public void setStatus(String newStatus) { this.status = newStatus; }

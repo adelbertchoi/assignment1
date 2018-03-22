@@ -1,14 +1,12 @@
 
 /*
  * ====== Driver.java
- * 
- * This class is the main program where the built 
- * classes interact. This class makes use of Profiles, 
- * User, Adult, and Child classes. Driver.java uses 
- * these methods in these classes to manage the social
- * network. In particular, this class allows, viewing, 
- * adding and deleting of user profiles, as well as 
- * connecting and disconnecting user profiles.    
+ * This class is the main program where the built classes interact. 
+ * This class makes use of Profiles, User, Adult, and Child classes. 
+ * Driver.java uses these methods in these classes to manage the social
+ * network. In particular, this class allows, viewing, adding and 
+ * deleting of user profiles, as well as connecting and disconnecting 
+ * user profiles.    
  * 
  * */
 
@@ -93,59 +91,76 @@ public class Driver {
 	// adjusts the edit profile submenu options accordingly
 	// e.g., change 'edit status' to 'add status' if user does not have a status present in the profile
 	public String[] getEditProfileOptions(User userProfile) {
-		String[] options =  { "Show Profile", "Edit Status", "Edit Image", "Edit Age", "Add a network", 
-				"Delete a network", "Find a friend from current network", "Back to main menu"};
+		String[] options =  { "Show Profile", "Edit Name", "Edit Status", "Edit Image", "Edit Age", "Add a network", 
+				"Delete a network", "Find a friend from a current friend", "Delete this user", "Back to main menu"};
+		
+		if ( userProfile.getFirstName().isEmpty() )
+			options[1] = "Add Name";
 		
 		if ( userProfile.getStatus().isEmpty() )
-			options[1] = "Add Status";
+			options[2] = "Add Status";
 		
 		if ( userProfile.getImage().isEmpty() )
-			options[2] = "Add Image";
+			options[3] = "Add Image";
 		
 		if ( userProfile.getAge() == 0 )
-			options[3] = "Add Age";
+			options[4] = "Add Age";
 		
 		return options;
 	}
 	
 	// method containing switch function to choose the type of action that will be executed for a certain profile
-	public void editProfile(User userProfile) {
+	public void editProfile(User user) {
 		int choice;
 		
 		do {
-			Menu editSubmenu = new Menu("Edit " + userProfile.getUsername() + "'s Profile", getEditProfileOptions(userProfile));
+			Menu editSubmenu = new Menu("Edit " + user.getUsername() + "'s Profile", getEditProfileOptions(user));
 			editSubmenu.displayMenu();
 			choice = editSubmenu.getValidOption();
 			
 			switch (choice) {
 				case 0: { 
-					System.out.print("\n\t *** Showing " + userProfile.getUsername() + "'s user profile.");
-					userProfile.printProfile(); 
+					System.out.print("\n\t *** Showing " + user.getUsername() + "'s user profile.");
+					user.printProfile(); 
 					System.out.println();  
 					break;
 				}
-				case 1: {
-					System.out.print("\t === Enter Status : ");
-					userProfile.setStatus(sc.nextLine());
-					break; 
-				}
-				case 2: {
-					System.out.print("\t === Enter Image : ");
-					String newImage =  sc.nextLine();
-					if (newImage.toLowerCase().contains(".png") || newImage.toLowerCase().contains(".jpeg"))
-						userProfile.setImage(newImage );
-					else 
-						System.out.print("\n\t *** filename must contain .png or .jpeg extension. Image not changed.");
-					break; 
-				}
-				case 3: userProfile.editAge(Menu.getIntInput("Enter Age")); break;
-				case 4: connectUsers(userProfile.getUsername()); break;
-				case 5: disconnectUsers(userProfile.getUsername()); break;
-				case 6: friendOfFriend(userProfile.getUsername()); break;
-				case 7: break;
+				case 1: editUserStringInput(user, "name"); break; 
+				case 2: editUserStringInput(user, "status"); break;
+				case 3: editUserStringInput(user, "image"); break;
+				case 4: user.editAge(Menu.getIntInput("Enter Age")); break;
+				case 5: connectUsers(user.getUsername()); break;
+				case 6: disconnectUsers(user.getUsername()); break;
+				case 7: friendOfFriend(user.getUsername()); break;
+				case 8: userDatabase.deleteUser(user.getUsername()); break;
+				case 9: break;
 			}
-		} while (choice != 7); // because there are only 7 choices
+		} while (choice != 9); // because there are only 7 choices
 		System.out.println("\n\t *** All Changes made were saved.");  
+	}
+	
+	public void editUserStringInput(User user, String type) {
+		if (type == "name") {
+			System.out.print("\t === Enter First Name : ");
+			user.setFirstname(sc.nextLine().trim());
+			System.out.print("\t === Enter Last Name : ");
+			user.setLastname(sc.nextLine().trim());
+		}
+		
+		if (type == "status") {
+			System.out.print("\t === Enter Status : ");
+			user.setStatus(sc.nextLine());
+		}
+		
+		if (type == "image") {
+			System.out.print("\t === Enter Image : ");
+			String newImage =  sc.nextLine();
+			if (newImage.toLowerCase().contains(".png") || newImage.toLowerCase().contains(".jpeg"))
+				user.setImage(newImage);
+			else 
+				System.out.print("\n\t *** filename must contain .png or .jpeg extension. Image not changed.");
+		}
+		
 	}
 	
 	// method displaying a submenu when creating a new profile using the 
@@ -168,13 +183,14 @@ public class Driver {
 	
 	// this method adds a new user depending on the type of user profile to be added
 	public void addUserProfile(String profileType) {
-		System.out.print("\n\t ========= " + profileType + " ====== ");
+		System.out.print("\n\t ========= Creating " + profileType + " user ====== ");
 		System.out.print("\n\t === Enter username : ");
 		String username = sc.nextLine();
-		username = username.trim(); // leading and trailing spaces are removed from username entered
+		username = username.trim().replaceAll("\\s+",""); // all whitespaces in the username are removed
+	  	// System.out.print("\t *** All blank spaces in the username entered is removed.");
 		
 		if ( userDatabase.existingUser(username) ) {
-			System.out.print("\n\t *** User Profile with username '" + username + "' already exists.");
+			System.out.print("\n\t *** User Profile with username '" + username + "' already exists.\n");
 			return;
 		}
 		
@@ -208,6 +224,13 @@ public class Driver {
 		// utilises getParentsInput
 		for (int i = 0; i < 2; i++) {
 			parentName[i] = getParentsInput(i);
+			
+			if ( ((Adult) userDatabase.getProfile(parentName[i])).getPartner() != null) {
+				parentName[1] = ((Adult) userDatabase.getProfile(parentName[i])).getPartner().getUsername();
+				System.out.println("\n\t *** Don't have too enter second parent name. Current partner of " + parentName[i] + " retrieved.");
+				break;
+			}
+				
 		}
 
 		userDatabase.addUser(new Child(username, age, ((Adult) userDatabase.getProfile(parentName[0])),
@@ -232,16 +255,6 @@ public class Driver {
 				if ( !userDatabase.existingUser(username)) {
 					System.out.print("\t *** Username entered does not exist. Enter again.\n");
 					showErr=1;
-				} else criteria++;
-				
-				// second condition: if username provided is of an adult type user
-				// check if user already has dependent. 
-				// user cannot be set as parent if they already have a dependent
-				if ( userDatabase.getProfile(username) instanceof Adult ) {
-					if ( ((Adult) userDatabase.getProfile(username)).getDependent() != null && showErr == 0 ) {
-						System.out.print("\t *** Username entered already has a dependent. Enter again.\n");
-						showErr=1;
-					} else criteria++;
 				} else criteria++;					
 				
 				// third condition: if username provided is of a child type user. this type of profile cant be a parent 
@@ -249,7 +262,7 @@ public class Driver {
 					System.out.print("\t *** Username entered is a child profile. Enter again.\n");
 				else criteria++;
 				
-			} while ( criteria != 3 );
+			} while ( criteria != 2 );
 			
 		return username;
 	}
@@ -266,10 +279,7 @@ public class Driver {
 			return;
 		}
 		
-		if ( userDatabase.getProfile(username) instanceof Adult )
-			userDatabase.deleteAdultUser(username);
-		else 
-			userDatabase.deleteChildUser(username); 		
+		userDatabase.deleteUser(username);		
 	}
 	
 	// method to find whether a user can be friends with another user through a mutual friend 

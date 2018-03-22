@@ -1,21 +1,21 @@
 
 /*
  * ====== Adult.java
- * 
- * This class is a subclass of the User abstract class it 
- * implements the abstract method addFriends, printProfile, 
- * and editAge. This subclass has new additional instance 
- * variables dependent and partner. These variables
- * will keep track of the partner and child of this object.
- * These instance variables are only used when specified
+ * This class is a subclass of the User abstract class it implements the 
+ * abstract method addFriends, printProfile, and editAge. This subclass 
+ * has new additional instance variables dependent and partner. These 
+ * variables will keep track of the partner and child of this object.These 
+ * instance variables are only used when specified
  * 
  * */
+
+import java.util.ArrayList;
 
 public class Adult extends User {
 	
 	// Adult instance variables
 	// dependent and partner are set to null initially
-	private Child dependent = null; 
+	private ArrayList<Child> dependents = new ArrayList<Child>(); 
 	private Adult partner = null;
 	
 	// Adult class constructor
@@ -23,13 +23,19 @@ public class Adult extends User {
 	
 	
 	// getters - to obtain adult class instance variables
-	public Child getDependent() { return this.dependent; }
+	public ArrayList<Child> getDependents() { return this.dependents; }
 	public Adult getPartner() { return this.partner; }
 	
-	
 	// this method sets the dependent of this adult user
-	public void setDepedent(Child dependent) {
-		this.dependent = dependent;
+	public void addDepedent(Child dependent) {
+		dependents.add(dependent);
+	}
+	
+	// this method removes a dependent of this adult user
+	public void removeDepedent(Child dependent) {
+		for (int i=0; i<dependents.size(); i++) 
+			if (dependents.get(i).getUsername().equals(dependent.getUsername()))
+				dependents.remove(i);
 	}
 	
 	// this method sets the partner of the adult user
@@ -82,8 +88,8 @@ public class Adult extends User {
 	// function to delete a friend in adult user's friends list
 	public boolean deleteFriend(User friend) {
 		// you can only delete friends who are not your partner, in instances where you have a child
-		if ( (getDependent() != null) && (partner.getUsername().equals(friend.getUsername())) ) {
-			System.out.print("\n\t *** Cannot delete friend since " + getUsername() + " and " + friend.getUsername() + " are partners with a dependent");
+		if ( !dependents.isEmpty() && (partner.getUsername().equals(friend.getUsername())) ) {
+			System.out.print("\n\t *** Cannot delete friend since " + getUsername() + " and " + friend.getUsername() + " are partners of a dependent");
 			return false;
 		}
 		
@@ -117,6 +123,9 @@ public class Adult extends User {
 		// whether certain details of the adult user depends
 		// on the presence of values of the instance variables
 	
+		if ( !super.getFirstName().isEmpty() )
+			System.out.printf("\n\t\t %-10s :   %s %s", "Full Name", super.getFirstName(), super.getLastName());
+		
 		if ( super.getAge() != 0 )
 			System.out.printf("\n\t\t %-10s :   %-15s", "Age", super.getAge());
 		
@@ -129,8 +138,12 @@ public class Adult extends User {
 		if ( partner != null ) 
 			System.out.printf("\n\t\t %-10s :   %-15s", "Partner", partner.getUsername());
 		
-		if ( dependent != null ) 
-			System.out.printf("\n\t\t %-10s :   %-15s", "Dependent", dependent.getUsername());
+		if ( !dependents.isEmpty() ) {
+			System.out.printf("\n\t\t %-10s : ", "Dependents");
+			for(int i=0; i<dependents.size(); i++)
+			System.out.printf("\n\t\t   %-3d %-10s", (i+1), dependents.get(i).getUsername());
+		}
+			
 		
 		if( !super.getFriends().isEmpty() ) {
 			System.out.printf("\n\t\t %-10s : ", "Network");

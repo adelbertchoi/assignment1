@@ -1,15 +1,12 @@
 
 /*
  * ====== Menu.java
- * 
- * This class is a built class to allow the reproduction 
- * of menus. This menu was adapted from my assignment
- * back in programming fundamentals, were a menu was also
- * needed. Using this class menus, and submenus for this
- * application can be made without repetition. This class
- * also contains a number of static methods that validates
- * user input. These static methods were used throughout
- * the console-based program. 
+ * This class is a built class to allow the reproduction of menus. This 
+ * menu was adapted from my assignment back in programming fundamentals, 
+ * were a menu was also needed. Using this class menus, and submenus for 
+ * this application can be made without repetition. This class also contains 
+ * a number of static methods that validates user input. These static methods 
+ * were used throughout the console-based program. 
  * 
  * */
 
@@ -35,8 +32,13 @@ public class Menu {
 	// method to display the menu and its options
 	public void displayMenu() {
 		System.out.println("\n\t ========= " + this.menuTitle + " ====== ");
-		for (int i = 0; i < options.length; i++)
-			System.out.println("\t\t " + (i) + "\t" + options[i]);
+		if (options.length < 6) {
+			for (int i = 0; i < options.length; i++)
+				System.out.println("\t\t " + (i) + "\t" + options[i]);
+		} else {
+			for (int i = 0; i < options.length/2; i++)
+				System.out.printf("\t\t %-2d   %-15s %-2d   %-10s \n", (i), options[i], (i+5), options[i+5]);
+		}
 	}
 
 	// method to obtain input from keyboard based on the number of options
