@@ -1,20 +1,59 @@
 
+/*
+ * ====== Adult.java
+ * 
+ * This class is a subclass of the User abstract class it 
+ * implements the abstract method addFriends, printProfile, 
+ * and editAge. This subclass has new additional instance 
+ * variables dependent and partner. These variables
+ * will keep track of the partner and child of this object.
+ * These instance variables are only used when specified
+ * 
+ * */
+
 public class Adult extends User {
 	
-	// initial values
+	// Adult instance variables
+	// dependent and partner are set to null initially
 	private Child dependent = null; 
 	private Adult partner = null;
 	
-	// constructors
+	// Adult class constructor
 	public Adult(String username) { super(username); }
 	
+	
+	// getters - to obtain adult class instance variables
 	public Child getDependent() { return this.dependent; }
 	public Adult getPartner() { return this.partner; }
 	
-	public void setDepedent(Child dependent) { this.dependent = dependent; }
-	public void setPartner(Adult partner) { this.partner = partner; }
+	
+	// this method sets the dependent of this adult user
+	public void setDepedent(Child dependent) {
+		this.dependent = dependent;
+	}
+	
+	// this method sets the partner of the adult user
+	// Used in situations when a dependent is being set
+	public void setPartner(Adult partner) {
+		// set partner
+		this.partner = partner; 
+		
+		// is partner parameter passed is null no need to continue the function
+		if ( partner == null ) 
+			return;
+		
+		// if partner parameter passed is already amongst the friends of user
+		// no need to continue the function
+		if ( super.getFriends().contains(partner) )
+			return;
+		
+		// add partner parameter to friends list, also to partner friends lists
+		super.addToFriends(partner);
+		partner.addToFriends(this);
+	}
 	
 	public void editAge(int newAge) {
+		// condition for editing an adult user's age
 		if (newAge > 16) 
 			super.setAge(newAge);
 		else System.out.print("\n\t *** Age of an adult user must be at least 17. Age not changed");
@@ -39,6 +78,8 @@ public class Adult extends User {
 		return true;
 	}
 	
+	// overriden method
+	// function to delete a friend in adult user's friends list
 	public boolean deleteFriend(User friend) {
 		// you can only delete friends who are not your partner, in instances where you have a child
 		if ( (getDependent() != null) && (partner.getUsername().equals(friend.getUsername())) ) {
@@ -52,22 +93,30 @@ public class Adult extends User {
 				friend.removeFromFriends(this);
 				System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are not friends anymore");
 				
-				if ( partner.getUsername().equals(friend.getUsername()) ) {
-					this.setPartner(null);
-					((Adult) friend).setPartner(null);
+				
+				if ( partner != null ) {
+					if ( partner.getUsername().equals(friend.getUsername()) ) {
+						this.setPartner(null);
+						((Adult) friend).setPartner(null);
+					}
 				}
 				
-				return true;
+			return true;
 			}
 		}
 		System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are not friends in the first place");
 		return false;
 	}
 	
+	// overriden method
+	// print the details of the adult users profile - showing the instance variable values
 	public void printProfile() {
 		System.out.println("\n\t ========= Adult User Profile ====== ");
 		System.out.printf("\t\t %-10s :   %-15s", "Username", super.getUsername());
 		
+		// whether certain details of the adult user depends
+		// on the presence of values of the instance variables
+	
 		if ( super.getAge() != 0 )
 			System.out.printf("\n\t\t %-10s :   %-15s", "Age", super.getAge());
 		

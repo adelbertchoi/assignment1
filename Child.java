@@ -1,6 +1,20 @@
 
+/*
+ * ====== Child.java
+ * 
+ * This class is a subclass of the User abstract class it 
+ * implements the abstract method addFriends, printProfile, 
+ * and editAge. This subclass has new additional instance 
+ * variables parentOne and parentTwo. These variables
+ * will keep track of the parent users for child objects
+ * instantiated. 
+ * 
+ * */
+
 public class Child extends User {
 
+	// Child instance variables
+	// parents are need to be given values in instantiation
 	private Adult parentOne;
 	private Adult parentTwo;
 	
@@ -9,25 +23,25 @@ public class Child extends User {
 		super(username, age);
 		this.parentOne = parentOne;
 		this.parentTwo = parentTwo;
-		parentOne.setDepedent(this);
+		parentOne.setDepedent(this); 
 		parentTwo.setDepedent(this);
 		parentOne.setPartner(parentTwo);
 		parentTwo.setPartner(parentOne);
 	}
 	
+	// getters - to obtain child class instance variables
 	public Adult getParentOne() { return this.parentOne; }
 	public Adult getParentTwo() { return this.parentTwo; }
 	
 	public void editAge(int newAge) {
-		if (newAge < 2 || newAge > 17) {
-			System.out.print("\n\t *** Age of child user must be between 3 and 16");
-			return;
-		}
-		
-		super.setAge(newAge);
+		// condition for editing an adult user's age
+		if (newAge > 2 || newAge < 17) {
+			super.setAge(newAge);
+		} else System.out.print("\n\t *** Age of child user must be between 3 and 16");
 	}
 	
-	// method to add a network for an adult profile
+	// overriden method
+	// method to add a network for an child profile
 	public boolean addFriend(User friend) {
 		
 		if ( !(friend instanceof Child) ) {
@@ -50,11 +64,16 @@ public class Child extends User {
 		System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are now friends");
 		return true;
 	}
-	
+
+	// overriden method
+	// print the details of the adult users profile - showing the instance variable values
 	public void printProfile() {
 		System.out.println("\n\t ========= Child User Profile ====== ");
 		System.out.printf("\t\t %-10s :   %-15s", "Username", super.getUsername());
 		System.out.printf("\n\t\t %-10s :   %-15s", "Age", super.getAge());
+		
+		// whether certain details of the adult user depends
+		// on the presence of values of the instance variables
 		
 		if ( !(super.getImage().isEmpty()) )
 			System.out.printf("\n\t\t %-10s :   %-15s", "Image", super.getImage());
