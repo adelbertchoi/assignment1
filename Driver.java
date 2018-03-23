@@ -261,6 +261,7 @@ public class Driver {
 			System.out.print("\n\t *** Don't have too enter second parent name. Current partner of " + parentName[1] + " retrieved.");
 		} else {
 			do {
+				// validate the second parent name given.
 				parentName[1] = getParentsInput(1);
 			} while (!validateParentTwoInput(parentName[0], parentName[1]));
 		}
@@ -311,12 +312,12 @@ public class Driver {
 	// this method validates these. if conditions are not met cannot progress.
 	public boolean validateParentTwoInput(String parentOne, String parentTwo) {
 		if (parentTwo.equals(parentOne)) {
-			System.out.print("\t *** Invalid Input. Enter another username.\n");
+			System.out.print("\t *** Invalid Input. Username already in as first parent\n");
 			return false;
 		}
 		
 		if (((Adult) userDatabase.getProfile(parentTwo)).getPartner() != null) {
-			System.out.print("\n\t *** Invalid Input. Username entered already has another partner\n");
+			System.out.print("\t *** Invalid Input. Username entered already has another partner\n");
 			return false;
 		}
 			
