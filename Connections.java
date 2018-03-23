@@ -1,5 +1,5 @@
 
-/*
+/*     
  * ====== Connections.java
  * This class is manages all created and existing relationships between 
  * users. Similar to the Profiles class, Connections class also has methods
@@ -47,8 +47,7 @@ public class Connections {
 			// since the program assumes that if one of them is searched the other relationship is 
 			// also present. This is possible since Driver class manages what relationships gets 
 			// added
-			if ( relationships.get(i).getUsernameOne().equals(usernameOne) && 
-				 relationships.get(i).getUsernameTwo().equals(usernameTwo) )
+			if ( relationships.get(i).getUsernameOne().equals(usernameOne) && relationships.get(i).getUsernameTwo().equals(usernameTwo) )
 				return true;
 		}
 		return false;
@@ -57,8 +56,7 @@ public class Connections {
 	// a method to return a certain relationship
 	public Relationship getRelationship(String usernameOne, String usernameTwo) {
 		for (int i=0; i<relationships.size(); i++) {
-			if ( relationships.get(i).getUsernameOne().equals(usernameOne) && 
-				 relationships.get(i).getUsernameTwo().equals(usernameTwo) )
+			if ( relationships.get(i).getUsernameOne().equals(usernameOne) && relationships.get(i).getUsernameTwo().equals(usernameTwo) )
 				return relationships.get(i);
 		}
 		return null;
@@ -78,9 +76,9 @@ public class Connections {
 	// similar to addRelationhips, the vice versa relationship should also be removed
 	public void deleteRelationship(String usernameOne, String usernameTwo) {
 		for (int i = 0; i < relationships.size(); i++) {
-			if (relationships.get(i).getUsernameOne() == usernameOne && relationships.get(i).getUsernameTwo() == usernameTwo)
+			if (relationships.get(i).getUsernameOne().equals(usernameOne) && relationships.get(i).getUsernameTwo().equals(usernameTwo))
 				relationships.remove(i);
-			if (relationships.get(i).getUsernameOne() == usernameTwo && relationships.get(i).getUsernameTwo() == usernameOne)
+			if (relationships.get(i).getUsernameOne().equals(usernameTwo) && relationships.get(i).getUsernameTwo().equals(usernameOne))
 				relationships.remove(i);
 		}
 	}
@@ -89,17 +87,25 @@ public class Connections {
 	// this method is used when the program is permanently deleting a certain user.
 	public void deleteAllUserRelationships(String username) {
 		for (int i = 0; i < relationships.size(); i++)
-			if ( relationships.get(i).getUsernameOne().equals(username) || 
-				 relationships.get(i).getUsernameTwo().equals(username) )
+			if ( relationships.get(i).getUsernameOne().equals(username) || relationships.get(i).getUsernameTwo().equals(username) )
 				relationships.remove(i);
 	}
 	
+	// this method is used to find an intermediate friend between two friends
+	// provided a username and a friend of interest, find a friend that is common between the two
 	public ArrayList<Relationship> findFriendOfFriend(String username, String friend) {
+		// this is where the flow of relationships is stored
 		ArrayList<Relationship> relationshipFlow = new ArrayList<Relationship>();
+		// this stores all the relationships of a user
 		ArrayList<Relationship> userRelationships = getUserRelationships(username);
+		// this stores all the relationships of a certain friend of a user 
 		ArrayList<Relationship> friendRelationships;
 		
+		// outer loop go through all of the relationships of a user
 		for ( int i=0; i<userRelationships.size(); i++ ) {
+			
+			// second loop goes through all the relationships of a certain friend
+			// finding if the friend of interest is present in a user's friend
 			friendRelationships = getUserRelationships(userRelationships.get(i).getUsernameTwo());
 			for( int j=0; j<friendRelationships.size(); j++) {
 				if ( friendRelationships.get(j).getUsernameTwo().equals(friend) ) {

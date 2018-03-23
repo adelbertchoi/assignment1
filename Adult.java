@@ -1,5 +1,5 @@
 
-/*
+/*        
  * ====== Adult.java
  * This class is a subclass of the User abstract class it implements the 
  * abstract method addFriends, printProfile, and editAge. This subclass 

@@ -1,5 +1,5 @@
 
-/*
+/*       
  * ====== Profiles.java
  * This class is stores users instantiated. Both adult and child users 
  * are added and managed in this class. This social network assumes that 
@@ -107,7 +107,6 @@ public class Profiles {
 	}		
 	
 	// method to deleting a child type user permanently from the list of profiles 
-	// certain conditions need to be met before an adult user can be deleted
 	// this method will always return true, since a child profile can always be deleted
 	// however, making the method return true will be beneficial for better implementation 
 	// in the Driver class
@@ -122,7 +121,7 @@ public class Profiles {
 		// delete the child user profile from the list of user profiles
 		for (int i = 0; i < userProfiles.size(); i++) {
 			if (userProfiles.get(i).getUsername().equals(username)) {
-				this.deleteUserfromFriends(userProfiles.get(i));
+				deleteUserfromFriends(userProfiles.get(i));
 				userProfiles.remove(i);
 				System.out.print("\n\t *** User Profile '" + username + "' successfully deleted.");
 			}

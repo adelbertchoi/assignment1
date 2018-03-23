@@ -1,5 +1,5 @@
 
-/*
+/*          
  * ====== Relationship.java
  * This class is stores an existing relationship between certain users 
  * This would make finding relationships between users much more efficient

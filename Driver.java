@@ -1,5 +1,5 @@
 
-/*
+/*    
  * ====== Driver.java
  * This class is the main program where the built classes interact. 
  * This class makes use of Profiles, User, Adult, and Child classes. 
@@ -207,7 +207,6 @@ public class Driver {
 		System.out.print("\n\t === Enter username : ");
 		String username = sc.nextLine();
 		username = username.trim(); // remove leading and trailing whitespaces
-		// username = username.trim().replaceAll("\\s+",""); // all whitespaces in the username are removed
 		
 		if ( userDatabase.existingUser(username) ) {
 			System.out.print("\n\t *** User Profile with username '" + username + "' already exists.");

@@ -1,5 +1,5 @@
 
-/*
+/*        
  * ====== User.java
  * This class is a stores all the relevant information for for a certain 
  * user. These include username, age, status, image, and most importantly 
