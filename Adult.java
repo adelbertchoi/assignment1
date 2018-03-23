@@ -1,4 +1,4 @@
-
+     
 /*        
  * ====== Adult.java
  * This class is a subclass of the User abstract class it implements the 

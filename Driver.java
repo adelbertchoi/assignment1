@@ -247,33 +247,29 @@ public class Driver {
 		String[] parentName = new String[2];
 		int age;
 
-		// enter age of a child user
-		do {
+		do { // enter age of a child user
 			age = Menu.getIntInput("Enter age");
 			if (age < 3 || age > 17)
 				System.out.println("\t *** Invalid Input. Age of child user must be between 3 and 16.");
 		} while (age < 3 || age > 17);
 
-		// enter the parents of the user
-		// utilises getParentsInput
-		for (int i = 0; i < 2; i++) {
-			parentName[i] = getParentsInput(i);
+		parentName[0] = getParentsInput(0); // enter the parents of the user, utilises getParentsInput
 			
-			// if the first parent name given has a corresponding partner.
-			// automatically, set the partner. Making usability more convenient
-			if ( ((Adult) userDatabase.getProfile(parentName[i])).getPartner() != null) {
-				parentName[1] = ((Adult) userDatabase.getProfile(parentName[i])).getPartner().getUsername();
-				System.out.print("\n\t *** Don't have too enter second parent name. Current partner of " + parentName[i] + " retrieved.");
-				break;
-			}
+		// if the first parent name given has a corresponding partner, automatically, set the partner.
+		if ( ((Adult) userDatabase.getProfile(parentName[0])).getPartner() != null) {
+			parentName[1] = ((Adult) userDatabase.getProfile(parentName[0])).getPartner().getUsername();
+			System.out.print("\n\t *** Don't have too enter second parent name. Current partner of " + parentName[1] + " retrieved.");
+		} else {
+			do {
+				parentName[1] = getParentsInput(1);
+			} while (!validateParentTwoInput(parentName[0], parentName[1]));
 		}
 		
 		// instantiate child user using given inputs
-		userDatabase.addUser(new Child(username, age, ((Adult) userDatabase.getProfile(parentName[0])),
+		userDatabase.addUser(new Child(username, age, ((Adult) userDatabase.getProfile(parentName[0])), 
 				((Adult) userDatabase.getProfile(parentName[1]))));
 		
-		// add relationships between users
-		connections.addRelationship(username, parentName[0]);
+		connections.addRelationship(username, parentName[0]); // add relationships between child and parents 
 		connections.addRelationship(username, parentName[1]);
 		
 		// if there is not current relationship between the parents, need to create a relationship for them
@@ -311,6 +307,22 @@ public class Driver {
 		return username;
 	}
 
+	// certain additional conditions the second parent name is being give from the keyboard
+	// this method validates these. if conditions are not met cannot progress.
+	public boolean validateParentTwoInput(String parentOne, String parentTwo) {
+		if (parentTwo.equals(parentOne)) {
+			System.out.print("\t *** Invalid Input. Enter another username.\n");
+			return false;
+		}
+		
+		if (((Adult) userDatabase.getProfile(parentTwo)).getPartner() != null) {
+			System.out.print("\n\t *** Invalid Input. Username entered already has another partner\n");
+			return false;
+		}
+			
+		return true;
+	}
+	 
 	// method to permanently delete a user from the current list of profiles
 	public void deleteProfile() {
 		System.out.print("\n\t ========= Delete Profile " + "====== ");
@@ -366,9 +378,10 @@ public class Driver {
 		friendName = friendName.trim();
 		
 		if ( userDatabase.existingUser(friendName) ) {
-			userDatabase.getProfile(username).addFriend(userDatabase.getProfile(friendName));
-			connections.addRelationship(username, friendName); // add relationships between users
-			System.out.print("\n\t *** " + username + " and " + friendName + " are now friends");
+			if (userDatabase.getProfile(username).addFriend(userDatabase.getProfile(friendName))) {
+				connections.addRelationship(username, friendName); // add relationships between users
+				System.out.print("\n\t *** " + username + " and " + friendName + " are now friends");
+			}
 		} else System.out.print("\n\t *** User Profile with username '" + friendName + "' does not exist");
 	}
 	

@@ -1,4 +1,4 @@
-
+     
 /*     
  * ====== Child.java
  * This class is a subclass of the User abstract class it implements the 
@@ -59,7 +59,6 @@ public class Child extends User {
 	
 		super.addToFriends(friend);
 		friend.addToFriends(this);
-		System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are now friends");
 		return true;
 	}
 
