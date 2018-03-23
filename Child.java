@@ -37,10 +37,11 @@ public class Child extends User {
 		} else System.out.print("\n\t *** Age of child user must be between 3 and 16");
 	}
 	
-	// overriden method
+	// Overridden method
 	// method to add a network for an child profile
 	public boolean addFriend(User friend) {
-		
+		// three conditions need to be met before a friend can be added to a child
+		// if any one of the three is not met, friend will not be added to child list of friends
 		if ( !(friend instanceof Child) ) {
 			System.out.print("\n\t *** Child type users cannot be friends with Adults type users");
 			return false;
@@ -62,8 +63,8 @@ public class Child extends User {
 		return true;
 	}
 
-	// overriden method
-	// print the details of the adult users profile - showing the instance variable values
+	// Overridden method
+	// print the details of the child users profile - showing the instance variable values
 	public void printProfile() {
 		System.out.println("\n\t ========= Child User Profile ====== ");
 		System.out.printf("\t\t %-10s :   %-15s", "Username", super.getUsername());
@@ -73,7 +74,7 @@ public class Child extends User {
 		
 		System.out.printf("\n\t\t %-10s :   %-15s", "Age", super.getAge());
 		
-		// whether certain details of the adult user depends
+		// the printing of certain details of the child user depends
 		// on the presence of values of the instance variables
 		
 		if ( !(super.getImage().isEmpty()) )

@@ -65,9 +65,11 @@ public class Adult extends User {
 		else System.out.print("\n\t *** Age of an adult user must be at least 17. Age not changed");
 	}
 	
+	// Overridden method
 	// method to add a network for an adult profile
-	@Override
 	public boolean addFriend(User friend) {
+		// two conditions need to be met before a friend can be added to a child
+		// if any one of the two is not met, friend will not be added to child list of friends
 		if ( !(friend instanceof Adult) ) {
 			System.out.print("\n\t *** Adults type users cannot network with Children type users");
 			return false;
@@ -80,26 +82,30 @@ public class Adult extends User {
 		 
 		super.addToFriends(friend);
 		friend.addToFriends(this);
-		System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are now friends");
 		return true;
 	}
 	
-	// overriden method
+	// overridden method
 	// function to delete a friend in adult user's friends list
 	public boolean deleteFriend(User friend) {
 		// you can only delete friends who are not your partner, in instances where you have a child
+		// Overall, will allow a friend to be deleted if they don't have a dependent together
+		// this is because the dependent depends on both parent users
 		if ( !dependents.isEmpty() && (partner.getUsername().equals(friend.getUsername())) ) {
 			System.out.print("\n\t *** Cannot delete friend since " + getUsername() + " and " + friend.getUsername() + " are partners of a dependent");
 			return false;
 		}
 		
+		// this section finds the friend to delete and deletes them from the 
+		// user's list of friends
 		for (int i=0; i< super.getFriends().size(); i++) {
 			if ( super.getFriends().contains(friend) ) {
 				super.removeFromFriends(friend);
 				friend.removeFromFriends(this);
 				System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are not friends anymore");
 				
-				
+				// also if friend that will be deleted is the user's partner.
+				// need to set the partner of the user to null, since the friend will be deleted
 				if ( partner != null ) {
 					if ( partner.getUsername().equals(friend.getUsername()) ) {
 						this.setPartner(null);
@@ -110,17 +116,18 @@ public class Adult extends User {
 			return true;
 			}
 		}
+		
 		System.out.print("\n\t *** " + getUsername() + " and " + friend.getUsername() + " are not friends in the first place");
 		return false;
 	}
 	
-	// overriden method
+	// overridden method
 	// print the details of the adult users profile - showing the instance variable values
 	public void printProfile() {
 		System.out.println("\n\t ========= Adult User Profile ====== ");
 		System.out.printf("\t\t %-10s :   %-15s", "Username", super.getUsername());
 		
-		// whether certain details of the adult user depends
+		// printing of certain details of the adult user depends
 		// on the presence of values of the instance variables
 	
 		if ( !super.getFirstName().isEmpty() )
@@ -142,8 +149,7 @@ public class Adult extends User {
 			System.out.printf("\n\t\t %-10s : ", "Dependents");
 			for(int i=0; i<dependents.size(); i++)
 			System.out.printf("\n\t\t   %-3d %-10s", (i+1), dependents.get(i).getUsername());
-		}
-			
+		}		
 		
 		if( !super.getFriends().isEmpty() ) {
 			System.out.printf("\n\t\t %-10s : ", "Network");

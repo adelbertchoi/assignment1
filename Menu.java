@@ -26,7 +26,7 @@ public class Menu {
 		this.options = options;
 	}
 	
-	// getter - return the set of options for a certain manu object
+	// getter - return the set of options for a certain menu object
 	public String[] getOptions() { return this.options; }
 
 	// method to display the menu and its options

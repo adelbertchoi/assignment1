@@ -56,7 +56,7 @@ public abstract class User {
 	
 	// can be considered a setter
 	// this method adds a friend to a user's friend list
-	// this method is required to make changes to friends instance variables
+	// this method is required to make changes to friends instance variable i.e. list of friends
 	// otherwise, modifying friends would be impossible in subclass methods
 	public void addToFriends(User friend) { this.friends.add(friend); } 
 	

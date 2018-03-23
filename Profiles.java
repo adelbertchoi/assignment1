@@ -60,22 +60,24 @@ public class Profiles {
 			user.getFriends().get(i).deleteFriend(user);		
 	}
 	
-	
-	public void deleteUser(String username) { 
+	// this is the overall function to delete a user from the list of user profiles
+	// depending on the type of user it calls the right method to check for 
+	// conditions before a user is fully deleted from the list of profiles
+	public boolean deleteUser(String username) { 
 		// if no user with username exist cannot delete anything
 		if ( !existingUser(username) )
-			return;
+			return true;
 			
 		if ( getProfile(username) instanceof Adult )
-			deleteAdultUser(username);
+			return deleteAdultUser(username);
 		else
-			deleteChildUser(username);	
+			return deleteChildUser(username);	
 	}
 	
 	
 	// method to deleting an adult type user permanently from the list of profiles 
 	// certain conditions need to be met before an adult user can be deleted 
-	public void deleteAdultUser(String username) {
+	public boolean deleteAdultUser(String username) {
 		Adult user = ((Adult) getProfile(username));
 
 		// if adult user has a partner and dependent account cannot delete the user
@@ -84,7 +86,7 @@ public class Profiles {
 		// other the dependent user profile must be deleted to delete adult profile
 		if ((user.getPartner() != null) && (!user.getDependents().isEmpty())) {
 			System.out.print("\n\t *** Cannot delete '" + username + "' since user has a dependent");
-			return;
+			return false;
 		}
 		
 		// if user profile has a partner adjust partners instance variables accordingly
@@ -98,13 +100,18 @@ public class Profiles {
 				deleteUserfromFriends(userProfiles.get(i));				
 				userProfiles.remove(i);
 				System.out.print("\n\t *** User Profile '" + username + "' successfully deleted.");
+				return true;
 			}
 		}
+		return false;
 	}		
 	
 	// method to deleting a child type user permanently from the list of profiles 
-	// certain conditions need to be met before an adult user can be deleted 	
-	public void deleteChildUser(String username) {
+	// certain conditions need to be met before an adult user can be deleted
+	// this method will always return true, since a child profile can always be deleted
+	// however, making the method return true will be beneficial for better implementation 
+	// in the Driver class
+	public boolean deleteChildUser(String username) {
 		Child user = ((Child) getProfile(username));
 
 		// set the dependents of parents to null
@@ -120,6 +127,7 @@ public class Profiles {
 				System.out.print("\n\t *** User Profile '" + username + "' successfully deleted.");
 			}
 		}
+		return true;
 	}
 	
 	// method to return a certain user 

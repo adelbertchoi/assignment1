@@ -12,6 +12,7 @@ public class MiniNet {
 		
 		System.out.println("\n\n\t *** Welcome to MiniNet. Choose an option in the menu to start.");
 		network.runSocialNetwork();
+		
 	}
 
 }

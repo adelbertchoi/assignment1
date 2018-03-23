@@ -10,14 +10,19 @@
  * 
  * */
 
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Driver {
 
 	private Scanner sc = new Scanner(System.in);
 	private Profiles userDatabase = new Profiles();
+	private Connections connections = new Connections();
 
+	// Driver constructor to create objects for the program
 	public Driver() {
+		// add adult profiles
 		userDatabase.addUser(new Adult("Alice"));
 		userDatabase.addUser(new Adult("Bob"));
 		userDatabase.addUser(new Adult("Cathy"));
@@ -25,13 +30,24 @@ public class Driver {
 		userDatabase.addUser(new Adult("John"));
 		userDatabase.addUser(new Adult("Jane"));
 		
+		// create relationships between adult profiles
+		userDatabase.getProfile("Alice").addFriend(userDatabase.getProfile("Bob"));
+		connections.addRelationship("Alice", "Bob");
+		
+		userDatabase.getProfile("Alice").addFriend(userDatabase.getProfile("Don"));		
+		connections.addRelationship("Alice", "Don");
+		
+		// add child profiles
+		// also create relationships between the profiles
 		userDatabase.addUser(new Child("Catherine", 14, ((Adult) userDatabase.getProfile("Bob")),
 				((Adult) userDatabase.getProfile("Alice"))));
+		connections.addRelationship("Catherine", "Alice");
+		connections.addRelationship("Catherine", "Bob");
+		
 		userDatabase.addUser(new Child("Mich", 15, ((Adult) userDatabase.getProfile("Don")),
 				((Adult) userDatabase.getProfile("Cathy"))));
-		
-		userDatabase.getProfile("Alice").addFriend(userDatabase.getProfile("Bob"));
-		userDatabase.getProfile("Alice").addFriend(userDatabase.getProfile("Don"));
+		connections.addRelationship("Mich", "Don");
+		connections.addRelationship("Mich", "Cathy");		
 	}
 	
 	// this method displays all the usernames of created user profiles
@@ -63,6 +79,7 @@ public class Driver {
 		System.out.println();
 	}
 
+	
 	// this method searches and displays the user profile information desired
 	public void searchProfile() {
 		System.out.print("\n\t ========= Search Profile " + "====== ");
@@ -109,6 +126,7 @@ public class Driver {
 		return options;
 	}
 	
+	// this method will lead to a submenu allowing to edit a certain user's profile
 	// method containing switch function to choose the type of action that will be executed for a certain profile
 	public void editProfile(User user) {
 		int choice;
@@ -125,20 +143,22 @@ public class Driver {
 					System.out.println();  
 					break;
 				}
-				case 1: editUserStringInput(user, "name"); break; 
-				case 2: editUserStringInput(user, "status"); break;
-				case 3: editUserStringInput(user, "image"); break;
-				case 4: user.editAge(Menu.getIntInput("Enter Age")); break;
-				case 5: connectUsers(user.getUsername()); break;
-				case 6: disconnectUsers(user.getUsername()); break;
-				case 7: friendOfFriend(user.getUsername()); break;
-				case 8: userDatabase.deleteUser(user.getUsername()); break;
-				case 9: break;
+				case 1: editUserStringInput(user, "name"); break; 			// update name of a user
+				case 2: editUserStringInput(user, "status"); break;			// update status of a user
+				case 3: editUserStringInput(user, "image"); break;			// update image of a user
+				case 4: user.editAge(Menu.getIntInput("Enter Age")); break;	// update age of a user
+				case 5: connectUsers(user.getUsername()); break;				// connect a user with a friend
+				case 6: disconnectUsers(user.getUsername()); break;			// disconnect a user with a friend
+				case 7: friendOfFriend(user.getUsername()); break;			// find an intermediate friend from user's friends to a new friend 
+				case 8: userDatabase.deleteUser(user.getUsername()); break;	// delete current user permanently
+				case 9: break;												// exit submenu
 			}
-		} while (choice != 9); // because there are only 7 choices
+		} while (choice != 9); // because there are only 9 choices
 		System.out.println("\n\t *** All Changes made were saved.");  
 	}
 	
+	// A method created to allowing editing of a user's profile 
+	// handles editing the name, status, and image of a user
 	public void editUserStringInput(User user, String type) {
 		if (type == "name") {
 			System.out.print("\t === Enter First Name : ");
@@ -186,11 +206,11 @@ public class Driver {
 		System.out.print("\n\t ========= Creating " + profileType + " user ====== ");
 		System.out.print("\n\t === Enter username : ");
 		String username = sc.nextLine();
-		username = username.trim().replaceAll("\\s+",""); // all whitespaces in the username are removed
-	  	// System.out.print("\t *** All blank spaces in the username entered is removed.");
+		username = username.trim(); // remove leading and trailing whitespaces
+		// username = username.trim().replaceAll("\\s+",""); // all whitespaces in the username are removed
 		
 		if ( userDatabase.existingUser(username) ) {
-			System.out.print("\n\t *** User Profile with username '" + username + "' already exists.\n");
+			System.out.print("\n\t *** User Profile with username '" + username + "' already exists.");
 			return;
 		}
 		
@@ -208,7 +228,9 @@ public class Driver {
 		editProfile(userDatabase.getProfile(username));
 	}
 	
-	// this method obtains input from keyboard to instantiate the a child user profile 
+	// this method obtains input from keyboard to instantiate the a child user profile
+	// when creating a child profile we ensure that everything is correct. This is the only part of 
+	// the program where the user is required to input values until they are correct.
 	public void addChildProfile(String username) {
 		String[] parentName = new String[2];
 		int age;
@@ -225,16 +247,26 @@ public class Driver {
 		for (int i = 0; i < 2; i++) {
 			parentName[i] = getParentsInput(i);
 			
+			// if the first parent name given has a corresponding partner.
+			// automatically, set the partner. Making usability more convenient
 			if ( ((Adult) userDatabase.getProfile(parentName[i])).getPartner() != null) {
 				parentName[1] = ((Adult) userDatabase.getProfile(parentName[i])).getPartner().getUsername();
-				System.out.println("\n\t *** Don't have too enter second parent name. Current partner of " + parentName[i] + " retrieved.");
+				System.out.print("\n\t *** Don't have too enter second parent name. Current partner of " + parentName[i] + " retrieved.");
 				break;
 			}
-				
 		}
-
+		
+		// instantiate child user using given inputs
 		userDatabase.addUser(new Child(username, age, ((Adult) userDatabase.getProfile(parentName[0])),
-				((Adult) userDatabase.getProfile(parentName[1]))));		
+				((Adult) userDatabase.getProfile(parentName[1]))));
+		
+		// add relationships between users
+		connections.addRelationship(username, parentName[0]);
+		connections.addRelationship(username, parentName[1]);
+		
+		// if there is not current relationship between the parents, need to create a relationship for them
+		if ( !connections.existingRelationship(parentName[0], parentName[1]) )
+			connections.addRelationship(parentName[0], parentName[1]);
 	}
 	
 	// this method gets input from keyboard of a child users parents
@@ -257,7 +289,7 @@ public class Driver {
 					showErr=1;
 				} else criteria++;					
 				
-				// third condition: if username provided is of a child type user. this type of profile cant be a parent 
+				// second condition: if username provided is of a child type user. this type of profile cant be a parent 
 				if ( userDatabase.getProfile(username) instanceof Child && showErr == 0)
 					System.out.print("\t *** Username entered is a child profile. Enter again.\n");
 				else criteria++;
@@ -279,7 +311,9 @@ public class Driver {
 			return;
 		}
 		
-		userDatabase.deleteUser(username);		
+		if ( userDatabase.deleteUser(username) )
+			connections.deleteAllUserRelationships(username);
+			// if user profile is successfully deleted, must also delete all relationships that includes him
 	}
 	
 	// method to find whether a user can be friends with another user through a mutual friend 
@@ -301,21 +335,16 @@ public class Driver {
 			return;
 		}
 		
-		User user = userDatabase.getProfile(username), userFriend;
+		ArrayList<Relationship> relationshipFlow = connections.findFriendOfFriend(username, friendName);
 		
-		// loop to search for the intermediate friend within the list of friends of a user
-		for ( int i=0; i< user.getFriends().size();  i++ ) {
-			userFriend = user.getFriends().get(i);
-			for( int j=0; j<userFriend.getFriends().size() ; j++) {
-				if ( userFriend.getFriends().get(i).getUsername().equals(friendName) ) {
-					System.out.print("\n\t *** " + userFriend.getUsername() + " can introduce " + username + " to " + friendName);
-					System.out.print("\n\t *** " + username + " --> " + userFriend.getUsername() + " --> " + friendName);
-					return;
-				}
-			}
+		// if an intermediate friend is found, this section will run
+		if ( relationshipFlow != null ) {
+			System.out.print("\n\t *** " + relationshipFlow.get(0).getUsernameTwo() + " can introduce " + username + " to " + friendName);
+			System.out.print("\n\t *** " + username + " --> " + relationshipFlow.get(0).getUsernameTwo() + " --> " + friendName);
+			return; // finish the method when this section is ran
 		}
 		
-		System.out.print("\n\t *** " + username + " has not friends that can introduce him to " + friendName);
+		System.out.print("\n\t *** " + username + " has no friends that can introduce him to " + friendName);
 	}
 	
 	// method to connect to friends
@@ -324,8 +353,10 @@ public class Driver {
 		String friendName = sc.nextLine();
 		friendName = friendName.trim();
 		
-		if ( userDatabase.existingUser(friendName.trim()) ) {
+		if ( userDatabase.existingUser(friendName) ) {
 			userDatabase.getProfile(username).addFriend(userDatabase.getProfile(friendName));
+			connections.addRelationship(username, friendName); // add relationships between users
+			System.out.print("\n\t *** " + username + " and " + friendName + " are now friends");
 		} else System.out.print("\n\t *** User Profile with username '" + friendName + "' does not exist");
 	}
 	
@@ -338,6 +369,7 @@ public class Driver {
 		if ( userDatabase.existingUser(friendName) ) {
 			User user = userDatabase.getProfile(username);
 			user.deleteFriend(userDatabase.getProfile(friendName));
+			connections.deleteRelationship(username, friendName); // delete the relationships between users
 		} else System.out.print("\n\t *** User Profile with username '" + friendName + "' does not exist");
 	}
 
