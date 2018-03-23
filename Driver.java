@@ -1,4 +1,4 @@
-
+      
 /*    
  * ====== Driver.java
  * This class is the main program where the built classes interact. 
@@ -149,8 +149,12 @@ public class Driver {
 				case 4: user.editAge(Menu.getIntInput("Enter Age")); break;	// update age of a user
 				case 5: connectUsers(user.getUsername()); break;				// connect a user with a friend
 				case 6: disconnectUsers(user.getUsername()); break;			// disconnect a user with a friend
-				case 7: friendOfFriend(user.getUsername()); break;			// find an intermediate friend from user's friends to a new friend 
-				case 8: userDatabase.deleteUser(user.getUsername()); break;	// delete current user permanently
+				case 7: friendOfFriend(user.getUsername()); break;     	    // find an intermediate friend from user's friends to a new friend 
+				case 8: {
+					userDatabase.deleteUser(user.getUsername());				// delete current user permanently
+					choice = 9; 												// exit editing submenu
+					break;	
+				}
 				case 9: break;												// exit submenu
 			}
 		} while (choice != 9); // because there are only 9 choices
