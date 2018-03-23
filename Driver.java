@@ -143,19 +143,28 @@ public class Driver {
 					System.out.println();  
 					break;
 				}
-				case 1: editUserStringInput(user, "name"); break; 			// update name of a user
-				case 2: editUserStringInput(user, "status"); break;			// update status of a user
-				case 3: editUserStringInput(user, "image"); break;			// update image of a user
-				case 4: user.editAge(Menu.getIntInput("Enter Age")); break;	// update age of a user
-				case 5: connectUsers(user.getUsername()); break;				// connect a user with a friend
-				case 6: disconnectUsers(user.getUsername()); break;			// disconnect a user with a friend
-				case 7: friendOfFriend(user.getUsername()); break;     	    // find an intermediate friend from user's friends to a new friend 
+				// update name of a user
+				case 1: editUserStringInput(user, "name"); break; 		
+				// update status of a user
+				case 2: editUserStringInput(user, "status"); break;			
+				// update image of a user
+				case 3: editUserStringInput(user, "image"); break;			
+				// update age of a user
+				case 4: user.editAge(Menu.getIntInput("Enter Age")); break;	
+				// connect a user with a friend
+				case 5: connectUsers(user.getUsername()); break;				
+				// disconnect a user with a friend
+				case 6: disconnectUsers(user.getUsername()); break;			
+				// find an intermediate friend from user's friends to a new friend
+				case 7: friendOfFriend(user.getUsername()); break;     	    
+				// delete current user permanently
 				case 8: {
-					userDatabase.deleteUser(user.getUsername());				// delete current user permanently
-					choice = 9; 												// exit editing submenu
+					userDatabase.deleteUser(user.getUsername());				
+					choice = 9; // exit editing submenu 												
 					break;	
-				}
-				case 9: break;												// exit submenu
+				} 
+				// exit submenu
+				case 9: break;												
 			}
 		} while (choice != 9); // because there are only 9 choices
 		System.out.println("\n\t *** All Changes made were saved.");  
